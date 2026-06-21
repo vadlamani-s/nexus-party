@@ -123,7 +123,7 @@
                         <div>
                             <h4 class="text-xs uppercase tracking-widest text-saffron-500 font-bold mb-1">When</h4>
                             <p class="text-base font-semibold text-white">Tomorrow (Sunday)</p>
-                            <p class="text-stone-300">4:00 PM</p>
+                            <p class="text-stone-300">4:30 PM</p>
                         </div>
                     </div>
 
@@ -323,15 +323,15 @@
     </div>
 
     <script>
-        // Set dynamic date to tomorrow Sunday at 4:00 PM
-        const getTomorrowAt4PM = () => {
+        // Set dynamic date to tomorrow Sunday at 4:30 PM
+        const getTomorrowAt430PM = () => {
             const date = new Date();
             date.setDate(date.getDate() + 1);
-            date.setHours(16, 0, 0, 0);
+            date.setHours(16, 30, 0, 0);
             return date;
         };
 
-        const targetTime = getTomorrowAt4PM().getTime();
+        const targetTime = getTomorrowAt430PM().getTime();
 
         // Countdown Calculations
         function updateCountdown() {
