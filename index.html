@@ -260,8 +260,12 @@
                     </div>
 
                     <!-- Poll Results (Hidden until voted) -->
-                    <div id="poll-results" class="hidden space-y-4">
-                        <!-- Progress bars get injected here via Javascript -->
+                    <div id="poll-results" class="hidden text-center py-4">
+                        <div class="w-14 h-14 bg-saffron-500/20 rounded-full flex items-center justify-center mx-auto mb-3 border border-saffron-500/30">
+                            <i class="fa-solid fa-check text-2xl text-saffron-500"></i>
+                        </div>
+                        <h4 class="font-serif text-xl font-bold text-saffron-100 mb-1">Got it!</h4>
+                        <p class="text-xs text-stone-300">Your choice has been recorded.<br>See you at the party!</p>
                     </div>
                 </div>
 
@@ -443,51 +447,12 @@
         // The URL from your Google Apps Script Deployment
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxOMVLM7DCJe4gs9fq91s-IYekF_9JY83FA757p_d5F5MrDBgmxUEiWuUWW-PJt_Y7l/exec";
 
-        // We still keep the mock database just to instantly show the UI update for the user
-        const localVoteCounts = {
-            'Chai': 12,
-            'Mocktails': 4,
-            'Cocktails': 2
-        };
-
         function submitVote(choice) {
-            // 1. Instantly update the local UI to feel snappy
-            localVoteCounts[choice]++;
-
-            // 2. Hide the buttons and reveal the results container
+            // 1. Hide the buttons and reveal the thank you message
             document.getElementById('poll-options').classList.add('hidden');
-            const resultsDiv = document.getElementById('poll-results');
-            resultsDiv.classList.remove('hidden');
+            document.getElementById('poll-results').classList.remove('hidden');
 
-            // 3. Render the results UI immediately
-            const totalVotes = Object.values(localVoteCounts).reduce((a, b) => a + b, 0);
-            resultsDiv.innerHTML = '';
-            
-            for (const [option, votes] of Object.entries(localVoteCounts)) {
-                const percentage = Math.round((votes / totalVotes) * 100);
-                
-                // Updated labels to match new drinks
-                let label = option === 'Chai' ? 'Masala Chai ☕' : option === 'Mocktails' ? 'Mocktails 🍹' : 'Cocktails 🍸';
-
-                resultsDiv.innerHTML += `
-                    <div class="mb-3">
-                        <div class="flex justify-between text-xs text-white mb-1.5 font-medium">
-                            <span>${label}</span>
-                            <span class="text-saffron-500">${percentage}% <span class="text-stone-500">(${votes})</span></span>
-                        </div>
-                        <div class="w-full bg-black/40 rounded-full h-2 border border-white/5">
-                            <div class="bg-gradient-to-r from-saffron-600 to-saffron-500 h-2 rounded-full transition-all duration-1000 ease-out" style="width: 0%" data-width="${percentage}%"></div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            setTimeout(() => {
-                const bars = resultsDiv.querySelectorAll('[data-width]');
-                bars.forEach(bar => { bar.style.width = bar.getAttribute('data-width'); });
-            }, 50);
-
-            // 4. Silently send the real data to Google Sheets in the background
+            // 2. Silently send the real data to Google Sheets in the background
             fetch(GOOGLE_SCRIPT_URL, {
                 method: 'POST',
                 mode: 'no-cors', // Essential to prevent browser CORS errors from GitHub Pages
@@ -497,7 +462,7 @@
                 body: `vote=${encodeURIComponent(choice)}`
             })
             .then(() => {
-                showToast("Vote recorded! See you there. 📊");
+                showToast("Vote recorded! See you there. 🍹");
             })
             .catch((error) => {
                 console.error('Error saving vote:', error);
